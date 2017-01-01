@@ -82,7 +82,6 @@ bool IOHelper::readPersons(Persons &persons) //读入联系人
                 addr.province = getXMLElementTextSafe(addrElem->FirstChildElement("province"));
                 addr.city = getXMLElementTextSafe(addrElem->FirstChildElement("city"));
                 addr.detail = getXMLElementTextSafe(addrElem->FirstChildElement("detail"));
-                addr.postal = getXMLElementTextSafe(addrElem->FirstChildElement("postal"));
                 p.address = addr;
                 //birthday
                 Date birthday;
@@ -151,8 +150,6 @@ bool IOHelper::savePersons(const Persons &persons) const //保存联系人
         cityNode->InsertEndChild(doc->NewText(it->data.address.city.c_str()));
         XMLNode *detailNode = addressNode->InsertEndChild(doc->NewElement("detail"));
         detailNode->InsertEndChild(doc->NewText(it->data.address.detail.c_str()));
-        XMLNode *postalNode = addressNode->InsertEndChild(doc->NewElement("postal"));
-        postalNode->InsertEndChild(doc->NewText(it->data.address.postal.c_str()));
         //birthday
         XMLNode *birthdayNode = personNode->InsertEndChild(doc->NewElement("birthday"));
         XMLNode *yearNode = birthdayNode->InsertEndChild(doc->NewElement("year"));

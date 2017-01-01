@@ -1,31 +1,33 @@
-#include "telephonegroupinfo.h"
-#include "ui_telephonegroupinfo.h"
+#include "persongroupinfo.h"
+#include "ui_persongroupinfo.h"
 
-TelephoneGroupInfo::TelephoneGroupInfo(TelephoneGroups *tg, QWidget *parent) :
+PersonGroupInfo::PersonGroupInfo(PersonGroups *pg, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::TelephoneGroupInfo),
-    isNew(true),
-    telephonegroups(tg)
+    ui(new Ui::PersonGroupInfo),
+    persongroups(pg),
+    isNew(true)
 {
     ui->setupUi(this);
+    this->enableEdit();
 }
 
-TelephoneGroupInfo::TelephoneGroupInfo(TelephoneGroup *t, TelephoneGroups *tg, QWidget *parent) :
+PersonGroupInfo::PersonGroupInfo(PersonGroup *p, PersonGroups *pg, QWidget *parent):
     QDialog(parent),
-    ui(new Ui::TelephoneGroupInfo),
-    isNew(true),
-    telephonegroups(tg),
-    telephonegroup(t)
+    ui(new Ui::PersonGroupInfo),
+    persongroups(pg),
+    persongroup(p),
+    isNew(true)
 {
     ui->setupUi(this);
+    this->disableEdit();
 }
 
-TelephoneGroupInfo::~TelephoneGroupInfo()
+PersonGroupInfo::~PersonGroupInfo()
 {
     delete ui;
 }
 
-void TelephoneGroupInfo::closeEvent(QCloseEvent *e)
+void PersonGroupInfo::closeEvent(QCloseEvent *e)
 {
     if(!ui->groupNameLineEdit->isReadOnly())
     {
@@ -34,7 +36,7 @@ void TelephoneGroupInfo::closeEvent(QCloseEvent *e)
             if(QMessageBox::information(this, "确认关闭", "是否不保存而退出编辑？",
                                         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
             {
-                delete this->telephonegroup;
+                delete this->persongroup;
                 e->accept();
             }
             else
@@ -53,47 +55,47 @@ void TelephoneGroupInfo::closeEvent(QCloseEvent *e)
         e->accept();
 }
 
-void TelephoneGroupInfo::displayInfo()
+void PersonGroupInfo::displayInfo()
 {
-    ui->groupNameLineEdit->setText(QString::fromStdString(this->telephonegroup->name));
+    ui->groupNameLineEdit->setText(QString::fromStdString(this->persongroup->name));
 }
 
-void TelephoneGroupInfo::saveInfo()
+void PersonGroupInfo::saveInfo()
 {
-    this->telephonegroup->name = ui->groupNameLineEdit->text().toStdString();
+    this->persongroup->name = ui->groupNameLineEdit->text().toStdString();
 }
 
-void TelephoneGroupInfo::disableEdit()
+void PersonGroupInfo::disableEdit()
 {
     ui->groupNameLineEdit->setReadOnly(true);
     ui->okPushButton->hide();
 }
 
-void TelephoneGroupInfo::enableEdit()
+void PersonGroupInfo::enableEdit()
 {
     ui->groupNameLineEdit->setReadOnly(false);
     ui->okPushButton->show();
     ui->editPushButton->hide();
 }
 
-void TelephoneGroupInfo::on_editPushButton_clicked()
+void PersonGroupInfo::on_editPushButton_clicked()
 {
     this->enableEdit();
 }
 
-void TelephoneGroupInfo::on_okPushButton_clicked()
+void PersonGroupInfo::on_okPushButton_clicked()
 {
     this->disableEdit();
     this->saveInfo();
     if(this->isNew)
-        emit(this->addNewTelephoneGroup(this->telephonegroup));
+        emit(this->addNewPersonGroup(this->persongroup));
     this->close();
 }
 
-void TelephoneGroupInfo::on_cancelPushButton_clicked()
+void PersonGroupInfo::on_cancelPushButton_clicked()
 {
     this->disableEdit();
     if(this->isNew)
-        delete this->telephonegroup;
+        delete this->persongroup;
     this->close();
 }

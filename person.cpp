@@ -1,9 +1,10 @@
 #include "person.h"
-// : id(0), groupID(0), name(""), company(""), address(), birthday(), memo("")
+
 Person::Person()
 {
     id = 0;
-    groupID = 0;
+    groupID = -1;   //未分组
+    company = "";
     name = "";
     memo = "";
 }

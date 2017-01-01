@@ -13,6 +13,7 @@ public:
     friend class Person;
     friend class IOHelper;
     friend class PersonInfoDialog;
+    friend class EmailInfoDialog;
     friend class MainWindow;
 private:
     std::string email;

@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     p1.id = this->persons.count();
     p1.groupID = 0;
     p1.name = "Cooler";
-    p1.address = new Address("China", "Liaoning", "Shenyang", "NEU", "121212");
+    p1.address = new Address("China", "Liaoning", "Shenyang", "NEU");
     p1.birthday = new Date(1997, 8, 19);
     Telephone t1("123456", 0);
     p1.telephone.push_back(t1);
@@ -50,20 +50,21 @@ MainWindow::MainWindow(QWidget *parent) :
     p2.id = this->persons.count();
     p2.groupID = 1;
     p2.name = "御坂美琴";
-    p2.address = new Address("China", "Liaoning", "Shenyang", "NEU", "121212");
+    p2.address = new Address("China", "Liaoning", "Shenyang", "NEU");
     p2.birthday = new Date(1997, 1, 1);
     Telephone t2("654321", 0);
     p2.telephone.push_back(t2);
     this->persons.insertAsLast(p2);
 
     p3.id = this->persons.count();
+    p3.groupID = -1;
     p3.name = "宫水三叶";
-    p3.address = new Address("China", "Liaoning", "Shenyang", "Northeastern University", "2223333");
+    p3.address = new Address("China", "Liaoning", "Shenyang", "Northeastern University");
     p3.birthday = new Date(1997, 2, 2);
     Telephone t3("2323232323", 1);
     p3.telephone.push_back(t3);
     Email e1;
-    e1.groupID = 0;
+    e1.groupID = -1;
     e1.email = "mituha@miyami.com";
     p3.email.push_back(e1);
     e1.groupID = 1;
@@ -74,9 +75,9 @@ MainWindow::MainWindow(QWidget *parent) :
     p4.id = this->persons.count();
     p4.name = "Wang";
     p4.groupID = 1;
-    p4.address = new Address("China", "Liaoning", "Shenyang", "Northeastern University", "2223333");
+    p4.address = new Address("China", "Liaoning", "Shenyang", "Northeastern University");
     p4.birthday = new Date(1997, 2, 2);
-    Telephone t4("2323232323", 0);
+    Telephone t4("2323232323", -1);
     p4.telephone.push_back(t4);
     this->persons.insertAsLast(p4);
 
@@ -167,11 +168,10 @@ void MainWindow::on_personTableView_doubleClicked(const QModelIndex &index)
 {
     if(index.isValid())
     {
-        //QString s = this->model->item(index.row(), NameColumn)->text();
-        //QMessageBox::information(this, "Test", s, QMessageBox::Ok);
         int id = this->model->item(index.row(), IDColumn)->text().toInt();
-        PersonInfoDialog *dialog = new PersonInfoDialog(&(this->persons.findByID(id)->data),
+        PersonInfoDialog *dialog = new PersonInfoDialog(&(this->persons.findByID(id)->data), &this->persongroups,
                                                         &this->telephonegroups, &this->emailgroups, this);
+        connect(dialog, SIGNAL(needUpdatePersonsView()), this, SLOT(updateTableView()));
         dialog->exec();
     }
 }
@@ -198,7 +198,7 @@ void MainWindow::updateTableView()
     model->removeRows(0, model->rowCount());
     //sort
     this->persons.sort();
-    this->persons.updateID();
+    //this->persons.updateID();
     //display
     ListNodePosi(Person) pit = this->persons._elem.first();
     for(int i = 0; i < persons.count(); ++i, pit = pit->succ)
@@ -207,7 +207,10 @@ void MainWindow::updateTableView()
         model->item(i, IDColumn)->setTextAlignment(Qt::AlignCenter);
         model->setItem(i, NameColumn, new QStandardItem(QString::fromStdString(pit->data.name)));
         model->item(i, NameColumn)->setTextAlignment(Qt::AlignCenter);
-        model->setItem(i, GroupColumn, new QStandardItem(QString::fromStdString(this->persongroups.findByID(pit->data.groupID)->data.name)));
+        if(pit->data.groupID != -1)
+            model->setItem(i, GroupColumn, new QStandardItem(QString::fromStdString(this->persongroups.findByID(pit->data.groupID)->data.name)));
+        else
+            model->setItem(i, GroupColumn, new QStandardItem(QString::fromUtf8("未分组")));
         model->item(i, GroupColumn)->setTextAlignment(Qt::AlignCenter);
     }
     //resize
@@ -231,7 +234,18 @@ void MainWindow::on_pushButton_5_clicked()  //delete
     }
 }
 
-void MainWindow::on_personinfodialog_close(Person *newPerson)
+void MainWindow::onAddnewperson(Person *newPerson)
 {
+    newPerson->id = ++this->persons.maxID;
+    this->persons.insertAsLast(*newPerson);
+    delete newPerson;
+    this->updateTableView();
+}
 
+void MainWindow::on_newPushButton_clicked()
+{
+    PersonInfoDialog *dialog = new PersonInfoDialog(&this->persongroups, &this->telephonegroups,
+                                                    &this->emailgroups, this);
+    connect(dialog, SIGNAL(addNewPerson(Person*)), this, SLOT(onAddnewperson(Person*)));
+    dialog->exec();
 }

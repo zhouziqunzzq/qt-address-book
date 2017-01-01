@@ -430,6 +430,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="OkPushButton">
+         <property name="text">
+          <string>确定</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="cancelPushButton">
          <property name="text">
           <string>取消</string>
@@ -445,15 +452,23 @@
  <tabstops>
   <tabstop>nameLineEdit</tabstop>
   <tabstop>groupLineEdit</tabstop>
-  <tabstop>telTableView</tabstop>
   <tabstop>changeGroupPushButton</tabstop>
+  <tabstop>telTableView</tabstop>
+  <tabstop>addTelPushButton</tabstop>
+  <tabstop>delTelPushButton</tabstop>
   <tabstop>emailTableView</tabstop>
+  <tabstop>addEmailPushButton</tabstop>
+  <tabstop>delEmailPushButton</tabstop>
   <tabstop>companyLineEdit</tabstop>
   <tabstop>countryLineEdit</tabstop>
   <tabstop>provinceLineEdit</tabstop>
   <tabstop>cityLineEdit</tabstop>
+  <tabstop>detailLineEdit</tabstop>
   <tabstop>birthdayDateEdit</tabstop>
   <tabstop>memoTextEdit</tabstop>
+  <tabstop>morePushButton</tabstop>
+  <tabstop>editPushButton</tabstop>
+  <tabstop>cancelPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

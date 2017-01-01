@@ -6,13 +6,12 @@ Address::Address()
 
 }
 
-Address::Address(std::string con, std::string pro, std::string city, std::string detail, std::string postal)
+Address::Address(std::string con, std::string pro, std::string city, std::string detail)
 {
     this->country = con;
     this->province = pro;
     this->city = city;
     this->detail = detail;
-    this->postal = postal;
 }
 
 const Address& Address::operator=(Address *addr)
@@ -21,6 +20,5 @@ const Address& Address::operator=(Address *addr)
     this->province = addr->province;
     this->city = addr->city;
     this->detail = addr->detail;
-    this->postal = addr->postal;
     return *this;
 }

@@ -26,6 +26,7 @@ public:
         NameColumn,
         GroupColumn
     };
+
 private:
     Ui::MainWindow *ui;
     IOHelper ioh;
@@ -37,12 +38,14 @@ private:
     QStandardItemModel *model;
     void setupModel();
     void setupTableView();
-    void updateTableView();
+
 private slots:
     void validatePassword(std::string pwd, PasswordValidateDialog* pd);
     void on_personTableView_doubleClicked(const QModelIndex &index);
     void on_pushButton_5_clicked();
-    void on_personinfodialog_close(Person *newPerson);
+    void onAddnewperson(Person *newPerson);
+    void updateTableView();
+    void on_newPushButton_clicked();
 };
 
 #endif // MAINWINDOW_H
