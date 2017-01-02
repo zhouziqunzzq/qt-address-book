@@ -115,6 +115,7 @@ void EmailInfoDialog::on_groupSelectPushButton_clicked()
     EmailGroupsDialog *dialog = new EmailGroupsDialog(this->emailgroups, true, this);
     connect(dialog, SIGNAL(selectEmailGroup(EmailGroup*)), this, SLOT(onSelectEmailGroup(EmailGroup*)));
     dialog->exec();
+    delete dialog;
 }
 
 void EmailInfoDialog::onSelectEmailGroup(EmailGroup *eg)

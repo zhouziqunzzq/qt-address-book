@@ -75,6 +75,7 @@ void EmailGroupsDialog::on_tableView_doubleClicked(const QModelIndex &index)
         EmailGroupInfo *dialog = new EmailGroupInfo(&(this->emailgroups->findByID(id)->data), this->emailgroups, this);
         dialog->exec();
         this->updateTableView();
+        delete dialog;
     }
 }
 
@@ -83,6 +84,7 @@ void EmailGroupsDialog::on_newPushButton_clicked()
     EmailGroupInfo *dialog = new EmailGroupInfo(this->emailgroups, this);
     connect(dialog, SIGNAL(addNewEmailGroup(EmailGroup*)), this, SLOT(onAddNewEmailGroup(EmailGroup*)));
     dialog->exec();
+    delete dialog;
 }
 
 void EmailGroupsDialog::on_delPushButton_clicked()

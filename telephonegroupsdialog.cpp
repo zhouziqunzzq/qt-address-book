@@ -75,6 +75,7 @@ void TelephoneGroupsDialog::on_tableView_doubleClicked(const QModelIndex &index)
         TelephoneGroupInfo *dialog = new TelephoneGroupInfo(&(this->telephonegroups->findByID(id)->data), this->telephonegroups, this);
         dialog->exec();
         this->updateTableView();
+        delete dialog;
     }
 }
 
@@ -83,6 +84,7 @@ void TelephoneGroupsDialog::on_newPushButton_clicked()
     TelephoneGroupInfo *dialog = new TelephoneGroupInfo(this->telephonegroups, this);
     connect(dialog, SIGNAL(addNewTelephoneGroup(TelephoneGroup*)), this, SLOT(onAddNewTelephoneGroup(TelephoneGroup*)));
     dialog->exec();
+    delete dialog;
 }
 
 void TelephoneGroupsDialog::on_delPushButton_clicked()

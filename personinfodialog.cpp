@@ -11,7 +11,8 @@ PersonInfoDialog::PersonInfoDialog(PersonGroups *pg, TelephoneGroups *tg, EmailG
     telephonegroups(tg),
     emailgroups(eg),
     isHidden(true),
-    isNew(true)
+    isNew(true),
+    tempPerson(NULL)
 {
     ui->setupUi(this);
     //hide more
@@ -60,7 +61,8 @@ PersonInfoDialog::PersonInfoDialog(Person *person, PersonGroups *pg, TelephoneGr
 
 PersonInfoDialog::~PersonInfoDialog()
 {
-    delete tempPerson;
+    if(tempPerson != NULL)
+        delete tempPerson;
     delete ui;
 }
 
@@ -308,6 +310,7 @@ void PersonInfoDialog::on_telTableView_doubleClicked(const QModelIndex &index)
         TelephoneInfoDialog *dialog = new TelephoneInfoDialog(&this->p->telephone.at(id), this->telephonegroups, this);
         dialog->exec();
         this->updateTelTableView();
+        delete dialog;
     }
 }
 
@@ -319,6 +322,7 @@ void PersonInfoDialog::on_emailTableView_doubleClicked(const QModelIndex &index)
         EmailInfoDialog *dialog = new EmailInfoDialog(&this->p->email.at(id), this->emailgroups, this);
         dialog->exec();
         this->updateEmailTableView();
+        delete dialog;
     }
 }
 
@@ -355,6 +359,7 @@ void PersonInfoDialog::on_addTelPushButton_clicked()
     TelephoneInfoDialog *dialog = new TelephoneInfoDialog(this->telephonegroups, this);
     connect(dialog, SIGNAL(addNewTelephone(Telephone*)), this, SLOT(onAddNewTel(Telephone*)));
     dialog->exec();
+    delete dialog;
 }
 
 void PersonInfoDialog::onAddNewTel(Telephone *t)
@@ -391,6 +396,7 @@ void PersonInfoDialog::on_addEmailPushButton_clicked()
     EmailInfoDialog *dialog = new EmailInfoDialog(this->emailgroups, this);
     connect(dialog, SIGNAL(addNewEmail(Email*)), this, SLOT(onAddNewEmail(Email*)));
     dialog->exec();
+    delete dialog;
 }
 
 void PersonInfoDialog::onAddNewEmail(Email *e)
@@ -426,6 +432,7 @@ void PersonInfoDialog::on_changeGroupPushButton_clicked()
     PersonGroupsDialog *dialog = new PersonGroupsDialog(this->persongroups, true, this);
     connect(dialog, SIGNAL(selectPersonGroup(PersonGroup*)), this, SLOT(onSelectPersonGroup(PersonGroup*)));
     dialog->exec();
+    delete dialog;
 }
 
 void PersonInfoDialog::onSelectPersonGroup(PersonGroup *pg)

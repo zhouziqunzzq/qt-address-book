@@ -114,6 +114,7 @@ void TelephoneInfoDialog::on_groupSelectPushButton_clicked()
     TelephoneGroupsDialog *dialog = new TelephoneGroupsDialog(this->telephonegroups, true, this);
     connect(dialog, SIGNAL(selectTelephoneGroup(TelephoneGroup*)), this, SLOT(onSelectTelephoneGroup(TelephoneGroup*)));
     dialog->exec();
+    delete dialog;
 }
 
 void TelephoneInfoDialog::onSelectTelephoneGroup(TelephoneGroup *tg)

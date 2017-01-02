@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTableView>
 #include <QStandardItemModel>
+#include <QCloseEvent>
 #include "iohelper.h"
 #include "passwordvalidatedialog.h"
 #include "personinfodialog.h"
@@ -30,6 +31,9 @@ public:
         GroupColumn
     };
 
+protected:
+    void closeEvent(QCloseEvent *e);
+
 private:
     Ui::MainWindow *ui;
     IOHelper ioh;
@@ -39,8 +43,10 @@ private:
     TelephoneGroups telephonegroups;
     EmailGroups emailgroups;
     QStandardItemModel *model;
+    bool needSave;
     void setupModel();
     void setupTableView();
+    void generateTestData();
 
 private slots:
     void validatePassword(std::string pwd, PasswordValidateDialog* pd);
@@ -59,6 +65,12 @@ private slots:
     void onCleanTelephoneGroup(TelephoneGroup *tg);
     void onCleanPersonGroup(PersonGroup *pg);
     void onClearPersonGroup(PersonGroup *pg);
+    void on_pushButton_clicked();
+    void on_pushButton_2_clicked();
+    void on_keywordLineEdit_textChanged(const QString &arg1);
+    void on_pushButton_3_clicked();
+    void onPersonGroupSelect(PersonGroup *pg);
+    void on_pushButton_4_clicked();
 };
 
 #endif // MAINWINDOW_H

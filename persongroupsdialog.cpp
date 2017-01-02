@@ -75,6 +75,7 @@ void PersonGroupsDialog::on_tableView_doubleClicked(const QModelIndex &index)
         PersonGroupInfo *dialog = new PersonGroupInfo(&(this->persongroups->findByID(id)->data), this->persongroups, this);
         dialog->exec();
         this->updateTableView();
+        delete dialog;
     }
 }
 
@@ -83,6 +84,7 @@ void PersonGroupsDialog::on_newPushButton_clicked()
     PersonGroupInfo *dialog = new PersonGroupInfo(this->persongroups, this);
     connect(dialog, SIGNAL(addNewPersonGroup(PersonGroup*)), this, SLOT(onAddNewPersonGroup(PersonGroup*)));
     dialog->exec();
+    delete dialog;
 }
 
 void PersonGroupsDialog::on_delPushButton_clicked()

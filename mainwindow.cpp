@@ -11,15 +11,13 @@ using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    needSave(false)
 {
     ui->setupUi(this);
-    //this->setFixedSize(sizeHint());
 
     /*Settings IO Test*/
     this->ioh.readSettings(this->settings);
-    /*cout << "Settings:" << endl;
-    cout << this->settings.username << " " << this->settings.password << endl;*/
 
     if(this->settings.password != "")
     {
@@ -31,11 +29,97 @@ MainWindow::MainWindow(QWidget *parent) :
                 this, SLOT(validatePassword(std::string, PasswordValidateDialog*)));
         connect(pd, SIGNAL(rejected()), this, SLOT(close()));
         pd->exec();
+        delete pd;
     }
 
     //connections
     connect(ui->exitAction, SIGNAL(triggered(bool)), this, SLOT(close()));
 
+    //Generate test data
+    this->generateTestData();
+
+    //Display using TableView
+    this->model = new QStandardItemModel(persons.count(), 3);
+    this->setupModel();
+    this->setupTableView();
+    this->updateTableView();
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+    if(this->needSave)
+    {
+        auto rst = QMessageBox::information(this, "提示", "是否保存修改到文件？",
+                                            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
+        switch(rst)
+        {
+        case QMessageBox::Yes:
+            this->on_saveAction_triggered();
+            e->accept();
+            break;
+        case QMessageBox::No:
+            e->accept();
+            break;
+        case QMessageBox::Cancel:
+            e->ignore();
+            break;
+        }
+    }
+}
+
+void MainWindow::validatePassword(string pwd, PasswordValidateDialog* pd)
+{
+    if(this->settings.password == pwd)
+    {
+        pd->hide();
+        delete pd;
+        std::string welcomeMsg = "欢迎，" + (this->settings.username == "" ? "用户！" : this->settings.username + "！");
+        QMessageBox::information(this, "登陆成功", QString::fromStdString(welcomeMsg),QMessageBox::Ok, QMessageBox::Ok);
+        this->setWindowOpacity(1);
+    }
+    else
+    {
+        QMessageBox::critical(pd, "密码错误", "密码错误，请重试！", QMessageBox::Ok, QMessageBox::Ok);
+    }
+}
+
+void MainWindow::on_personTableView_doubleClicked(const QModelIndex &index)
+{
+    if(index.isValid())
+    {
+        this->needSave = true;
+        int id = this->model->item(index.row(), IDColumn)->text().toInt();
+        PersonInfoDialog *dialog = new PersonInfoDialog(&(this->persons.findByID(id)->data), &this->persongroups,
+                                                        &this->telephonegroups, &this->emailgroups, this);
+        connect(dialog, SIGNAL(needUpdatePersonsView()), this, SLOT(updateTableView()));
+        dialog->exec();
+        delete dialog;
+    }
+}
+
+void MainWindow::setupModel()
+{
+    model->setHeaderData(0, Qt::Horizontal, QString::fromUtf8("编号"));
+    model->setHeaderData(1, Qt::Horizontal, QString::fromUtf8("姓名"));
+    model->setHeaderData(2, Qt::Horizontal, QString::fromUtf8("分组"));
+}
+
+void MainWindow::setupTableView()
+{
+    ui->personTableView->setModel(model);
+    ui->personTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
+    ui->personTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->personTableView->setColumnHidden(0, true);
+    ui->personTableView->setSelectionBehavior(QTableView::SelectRows);
+}
+
+void MainWindow::generateTestData()
+{
     /*PersonGroups IO Test*/
     PersonGroup pg;
     pg.id = 0;
@@ -127,61 +211,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ioh.savePersons(this->persons);
     this->persons._elem.clear();
     this->ioh.readPersons(this->persons);
-
-    //Display using TableView
-    this->model = new QStandardItemModel(persons.count(), 3);
-    this->setupModel();
-    this->setupTableView();
-    this->updateTableView();
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
-void MainWindow::validatePassword(string pwd, PasswordValidateDialog* pd)
-{
-    if(this->settings.password == pwd)
-    {
-        pd->hide();
-        delete pd;
-        std::string welcomeMsg = "欢迎，" + (this->settings.username == "" ? "用户！" : this->settings.username + "！");
-        QMessageBox::information(this, "登陆成功", QString::fromStdString(welcomeMsg),QMessageBox::Ok, QMessageBox::Ok);
-        this->setWindowOpacity(1);
-    }
-    else
-    {
-        QMessageBox::critical(pd, "密码错误", "密码错误，请重试！", QMessageBox::Ok, QMessageBox::Ok);
-    }
-}
-
-void MainWindow::on_personTableView_doubleClicked(const QModelIndex &index)
-{
-    if(index.isValid())
-    {
-        int id = this->model->item(index.row(), IDColumn)->text().toInt();
-        PersonInfoDialog *dialog = new PersonInfoDialog(&(this->persons.findByID(id)->data), &this->persongroups,
-                                                        &this->telephonegroups, &this->emailgroups, this);
-        connect(dialog, SIGNAL(needUpdatePersonsView()), this, SLOT(updateTableView()));
-        dialog->exec();
-    }
-}
-
-void MainWindow::setupModel()
-{
-    model->setHeaderData(0, Qt::Horizontal, QString::fromUtf8("编号"));
-    model->setHeaderData(1, Qt::Horizontal, QString::fromUtf8("姓名"));
-    model->setHeaderData(2, Qt::Horizontal, QString::fromUtf8("分组"));
-}
-
-void MainWindow::setupTableView()
-{
-    ui->personTableView->setModel(model);
-    ui->personTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
-    ui->personTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->personTableView->setColumnHidden(0, true);
-    ui->personTableView->setSelectionBehavior(QTableView::SelectRows);
 }
 
 void MainWindow::updateTableView()
@@ -261,6 +290,7 @@ void MainWindow::on_pushButton_5_clicked()  //delete
                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
     {
         //Remove and update
+        this->needSave = true;
         this->persons.remove(p);
         this->updateTableView();
     }
@@ -268,6 +298,7 @@ void MainWindow::on_pushButton_5_clicked()  //delete
 
 void MainWindow::onAddnewperson(Person *newPerson)
 {
+    this->needSave = true;
     newPerson->id = ++this->persons.maxID;
     this->persons.insertAsLast(*newPerson);
     delete newPerson;
@@ -280,6 +311,7 @@ void MainWindow::on_newPushButton_clicked()
                                                     &this->emailgroups, this);
     connect(dialog, SIGNAL(addNewPerson(Person*)), this, SLOT(onAddnewperson(Person*)));
     dialog->exec();
+    delete dialog;
 }
 
 void MainWindow::on_saveAction_triggered()
@@ -291,13 +323,17 @@ void MainWindow::on_saveAction_triggered()
     flag &= this->ioh.saveEmailGroups(this->emailgroups);
     flag &= this->ioh.saveSettings(this->settings);
     if(flag)
+    {
         QMessageBox::information(this, "提示", "保存成功！", QMessageBox::Ok, QMessageBox::Ok);
+        this->needSave = false;
+    }
     else
         QMessageBox::critical(this, "错误", "保存失败，请重试！", QMessageBox::Ok, QMessageBox::Ok);
 }
 
 void MainWindow::on_personGroupsManageAction_triggered()
 {
+    this->needSave = true;
     PersonGroupsDialog *dialog = new PersonGroupsDialog(&(this->persongroups), false, this);
     connect(dialog, SIGNAL(cleanPersonGroup(PersonGroup*)), this, SLOT(onCleanPersonGroup(PersonGroup*)));
     connect(dialog, SIGNAL(clearPersonGroup(PersonGroup*)), this, SLOT(onClearPersonGroup(PersonGroup*)));
@@ -308,6 +344,7 @@ void MainWindow::on_personGroupsManageAction_triggered()
 
 void MainWindow::on_telGroupsManageAction_triggered()
 {
+    this->needSave = true;
     TelephoneGroupsDialog *dialog = new TelephoneGroupsDialog(&(this->telephonegroups), false, this);
     connect(dialog, SIGNAL(cleanTelephoneGroup(TelephoneGroup*)), this, SLOT(onCleanTelephoneGroup(TelephoneGroup*)));
     dialog->exec();
@@ -317,6 +354,7 @@ void MainWindow::on_telGroupsManageAction_triggered()
 
 void MainWindow::on_emailGroupsManageAction_triggered()
 {
+    this->needSave = true;
     EmailGroupsDialog *dialog = new EmailGroupsDialog(&(this->emailgroups), false, this);
     connect(dialog, SIGNAL(cleanEmailGroup(EmailGroup*)), this, SLOT(onCleanEmailGroup(EmailGroup*)));
     dialog->exec();
@@ -326,6 +364,7 @@ void MainWindow::on_emailGroupsManageAction_triggered()
 
 void MainWindow::on_settingsManageAction_triggered()
 {
+    this->needSave = true;
 
 }
 
@@ -372,11 +411,63 @@ void MainWindow::onClearPersonGroup(PersonGroup *pg)
 {
     ListNodePosi(Person) pit = this->persons._elem.first();
     ListNodePosi(Person) q = NULL;
-    for(int i = 0; i < this->persons.count(); ++i, pit = q)
+    int cnt = this->persons.count();
+    for(int i = 0; i < cnt; ++i, pit = q)
     {
         q = pit->succ;
         if(pit->data.groupID == pg->id)
             this->persons.remove(pit);
     }
     this->updateTableView();
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    QString keyword = ui->keywordLineEdit->text();
+    for(int i = 0; i < this->persons.count(); ++i)
+    {
+        if(!this->model->item(i, NameColumn)->text().contains(keyword))
+            ui->personTableView->setRowHidden(i, true);
+    }
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    ui->keywordLineEdit->clear();
+    for(int i = 0; i < this->persons.count(); ++i)
+        ui->personTableView->setRowHidden(i, false);
+}
+
+void MainWindow::on_keywordLineEdit_textChanged(const QString &arg1)
+{
+    for(int i = 0; i < this->persons.count(); ++i)
+        ui->personTableView->setRowHidden(i, false);
+    if(ui->keywordLineEdit->text().count() != 0)
+        this->on_pushButton_clicked();
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    PersonGroupsDialog *dialog = new PersonGroupsDialog(&(this->persongroups), true, this);
+    connect(dialog, SIGNAL(selectPersonGroup(PersonGroup*)), this, SLOT(onPersonGroupSelect(PersonGroup*)));
+    dialog->exec();
+    delete dialog;
+}
+
+void MainWindow::onPersonGroupSelect(PersonGroup *pg)
+{
+    QString keyword = QString::fromStdString(pg->name);
+    ui->groupFilterLabel->setText(keyword);
+    for(int i = 0; i < this->persons.count(); ++i)
+    {
+        if(!this->model->item(i, GroupColumn)->text().contains(keyword))
+            ui->personTableView->setRowHidden(i, true);
+    }
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    ui->groupFilterLabel->setText(QString::fromUtf8("全部分组"));
+    for(int i = 0; i < this->persons.count(); ++i)
+        ui->personTableView->setRowHidden(i, false);
 }
