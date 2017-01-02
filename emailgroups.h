@@ -9,6 +9,7 @@ public:
     EmailGroups();
     friend class IOHelper;
     friend class MainWindow;
+    friend class EmailGroupsDialog;
     ListNodePosi(EmailGroup) findByID(int id);
 };
 

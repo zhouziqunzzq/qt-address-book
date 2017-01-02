@@ -8,6 +8,7 @@ EmailGroupInfo::EmailGroupInfo(EmailGroups *eg, QWidget *parent) :
     isNew(true)
 {
     ui->setupUi(this);
+    this->emailgroup = new EmailGroup();
     this->enableEdit();
 }
 
@@ -19,6 +20,7 @@ EmailGroupInfo::EmailGroupInfo(EmailGroup *e, EmailGroups *eg, QWidget *parent) 
     isNew(false)
 {
     ui->setupUi(this);
+    this->displayInfo();
     this->disableEdit();
 }
 

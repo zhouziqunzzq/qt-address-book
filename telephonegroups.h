@@ -9,6 +9,7 @@ public:
     TelephoneGroups();
     friend class IOHelper;
     friend class MainWindow;
+    friend class TelephoneGroupsDialog;
     ListNodePosi(TelephoneGroup) findByID(int id);
 };
 

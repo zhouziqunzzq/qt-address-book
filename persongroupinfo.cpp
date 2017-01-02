@@ -8,6 +8,7 @@ PersonGroupInfo::PersonGroupInfo(PersonGroups *pg, QWidget *parent) :
     isNew(true)
 {
     ui->setupUi(this);
+    this->persongroup = new PersonGroup();
     this->enableEdit();
 }
 
@@ -16,9 +17,10 @@ PersonGroupInfo::PersonGroupInfo(PersonGroup *p, PersonGroups *pg, QWidget *pare
     ui(new Ui::PersonGroupInfo),
     persongroups(pg),
     persongroup(p),
-    isNew(true)
+    isNew(false)
 {
     ui->setupUi(this);
+    this->displayInfo();
     this->disableEdit();
 }
 

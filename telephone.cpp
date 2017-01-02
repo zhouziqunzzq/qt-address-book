@@ -3,7 +3,7 @@
 Telephone::Telephone()
 {
     this->tel = "";
-    this->groupID = 0;
+    this->groupID = -1;
 }
 
 Telephone::Telephone(std::string t, int id)

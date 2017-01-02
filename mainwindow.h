@@ -7,6 +7,9 @@
 #include "iohelper.h"
 #include "passwordvalidatedialog.h"
 #include "personinfodialog.h"
+#include "persongroupsdialog.h"
+#include "telephonegroupsdialog.h"
+#include "emailgroupsdialog.h"
 #include "listNode.h"
 #include "person.h"
 
@@ -45,7 +48,17 @@ private slots:
     void on_pushButton_5_clicked();
     void onAddnewperson(Person *newPerson);
     void updateTableView();
+    void updateCount();
     void on_newPushButton_clicked();
+    void on_saveAction_triggered();
+    void on_personGroupsManageAction_triggered();
+    void on_telGroupsManageAction_triggered();
+    void on_emailGroupsManageAction_triggered();
+    void on_settingsManageAction_triggered();
+    void onCleanEmailGroup(EmailGroup *eg);
+    void onCleanTelephoneGroup(TelephoneGroup *tg);
+    void onCleanPersonGroup(PersonGroup *pg);
+    void onClearPersonGroup(PersonGroup *pg);
 };
 
 #endif // MAINWINDOW_H

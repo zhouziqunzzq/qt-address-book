@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     telephonegroupinfo.cpp \
     emailgroupinfo.cpp \
     persongroupsdialog.cpp \
-    persongroupinfo.cpp
+    persongroupinfo.cpp \
+    settingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     list.h \
@@ -68,7 +69,8 @@ HEADERS  += mainwindow.h \
     telephonegroupinfo.h \
     emailgroupinfo.h \
     persongroupsdialog.h \
-    persongroupinfo.h
+    persongroupinfo.h \
+    settingsdialog.h
 
 FORMS    += mainwindow.ui \
     passwordvalidatedialog.ui \
@@ -80,4 +82,5 @@ FORMS    += mainwindow.ui \
     telephonegroupinfo.ui \
     emailgroupinfo.ui \
     persongroupsdialog.ui \
-    persongroupinfo.ui
+    persongroupinfo.ui \
+    settingsdialog.ui

@@ -9,6 +9,7 @@ public:
     PersonGroups();
     friend class IOHelper;
     friend class MainWindow;
+    friend class PersonGroupsDialog;
     ListNodePosi(PersonGroup) findByID(int id);
 };
 

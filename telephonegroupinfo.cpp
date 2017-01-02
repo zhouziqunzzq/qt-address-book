@@ -8,16 +8,20 @@ TelephoneGroupInfo::TelephoneGroupInfo(TelephoneGroups *tg, QWidget *parent) :
     telephonegroups(tg)
 {
     ui->setupUi(this);
+    this->telephonegroup = new TelephoneGroup();
+    this->enableEdit();
 }
 
 TelephoneGroupInfo::TelephoneGroupInfo(TelephoneGroup *t, TelephoneGroups *tg, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::TelephoneGroupInfo),
-    isNew(true),
+    isNew(false),
     telephonegroups(tg),
     telephonegroup(t)
 {
     ui->setupUi(this);
+    this->displayInfo();
+    this->disableEdit();
 }
 
 TelephoneGroupInfo::~TelephoneGroupInfo()

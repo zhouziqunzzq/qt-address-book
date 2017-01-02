@@ -3,7 +3,7 @@
 Email::Email()
 {
     this->email = "";
-    this->groupID = 0;
+    this->groupID = -1;
 }
 
 Email::Email(std::string addr, int id)

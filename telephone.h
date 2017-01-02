@@ -12,6 +12,7 @@ public:
     friend class IOHelper;
     friend class PersonInfoDialog;
     friend class TelephoneInfoDialog;
+    friend class MainWindow;
 private:
     std::string tel;
     int groupID;

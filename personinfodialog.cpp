@@ -43,6 +43,9 @@ PersonInfoDialog::PersonInfoDialog(Person *person, PersonGroups *pg, TelephoneGr
     this->setFixedHeight(400);
     setWindowFlags(windowFlags()&~Qt::WindowContextHelpButtonHint);
 
+    //New Temp Person
+    this->tempPerson = new Person(*person);
+
     //Setup models
     this->telModel = new QStandardItemModel(this->p->telephone.size(), 3);
     this->emailModel = new QStandardItemModel(this->p->email.size(), 3);
@@ -57,6 +60,7 @@ PersonInfoDialog::PersonInfoDialog(Person *person, PersonGroups *pg, TelephoneGr
 
 PersonInfoDialog::~PersonInfoDialog()
 {
+    delete tempPerson;
     delete ui;
 }
 
@@ -79,7 +83,10 @@ void PersonInfoDialog::closeEvent(QCloseEvent *e)
         {
             if(QMessageBox::information(this, "确认关闭", "是否不保存而退出编辑？",
                                         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+            {
+                *(this->p) = *(this->tempPerson);
                 e->accept();
+            }
             else
                 e->ignore();
         }
@@ -300,6 +307,7 @@ void PersonInfoDialog::on_telTableView_doubleClicked(const QModelIndex &index)
         int id = this->telModel->item(index.row(), IDColumn)->text().toInt();
         TelephoneInfoDialog *dialog = new TelephoneInfoDialog(&this->p->telephone.at(id), this->telephonegroups, this);
         dialog->exec();
+        this->updateTelTableView();
     }
 }
 
@@ -310,6 +318,7 @@ void PersonInfoDialog::on_emailTableView_doubleClicked(const QModelIndex &index)
         int id = this->emailModel->item(index.row(), IDColumn)->text().toInt();
         EmailInfoDialog *dialog = new EmailInfoDialog(&this->p->email.at(id), this->emailgroups, this);
         dialog->exec();
+        this->updateEmailTableView();
     }
 }
 
@@ -318,6 +327,11 @@ void PersonInfoDialog::on_cancelPushButton_clicked()
     this->disableEdit();
     if(this->isNew)
         delete this->p;
+    else
+    {
+        //Recover
+        *(this->p) = *(this->tempPerson);
+    }
     this->close();
 }
 
@@ -334,4 +348,92 @@ void PersonInfoDialog::on_OkPushButton_clicked()
     if(this->isNew)
         emit(this->addNewPerson(this->p));
     this->close();
+}
+
+void PersonInfoDialog::on_addTelPushButton_clicked()
+{
+    TelephoneInfoDialog *dialog = new TelephoneInfoDialog(this->telephonegroups, this);
+    connect(dialog, SIGNAL(addNewTelephone(Telephone*)), this, SLOT(onAddNewTel(Telephone*)));
+    dialog->exec();
+}
+
+void PersonInfoDialog::onAddNewTel(Telephone *t)
+{
+    this->p->telephone.push_back(*t);
+    delete t;
+    this->updateTelTableView();
+}
+
+void PersonInfoDialog::on_delTelPushButton_clicked()
+{
+    if(ui->telTableView->currentIndex().row() == -1)
+        return;
+    //Get selected row
+    int selectedRow = ui->telTableView->currentIndex().row();
+    //Get id
+    int id = this->telModel->item(selectedRow, IDColumn)->text().toInt();
+    //Confirm
+    QString tel = this->telModel->item(selectedRow, TelColumn)->text();
+    if(QMessageBox::information(this, "确认删除", "确认要删除电话:" + tel + "吗？",
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+    {
+        //Remove and update
+        if(p->telephone.at(id).groupID != -1)
+            --this->telephonegroups->findByID(p->telephone.at(id).groupID)->data.count;
+        this->p->telephone.erase(this->p->telephone.begin() + id);
+
+        this->updateTelTableView();
+    }
+}
+
+void PersonInfoDialog::on_addEmailPushButton_clicked()
+{
+    EmailInfoDialog *dialog = new EmailInfoDialog(this->emailgroups, this);
+    connect(dialog, SIGNAL(addNewEmail(Email*)), this, SLOT(onAddNewEmail(Email*)));
+    dialog->exec();
+}
+
+void PersonInfoDialog::onAddNewEmail(Email *e)
+{
+    this->p->email.push_back(*e);
+    delete e;
+    this->updateEmailTableView();
+}
+
+void PersonInfoDialog::on_delEmailPushButton_clicked()
+{
+    if(ui->emailTableView->currentIndex().row() == -1)
+        return;
+    //Get selected row
+    int selectedRow = ui->emailTableView->currentIndex().row();
+    //Get id
+    int id = this->emailModel->item(selectedRow, IDColumn)->text().toInt();
+    //Confirm
+    QString tel = this->emailModel->item(selectedRow, TelColumn)->text();
+    if(QMessageBox::information(this, "确认删除", "确认要删除Email:" + tel + "吗？",
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+    {
+        //Remove and update
+        if(p->email.at(id).groupID != -1)
+            --this->emailgroups->findByID(p->email.at(id).groupID)->data.count;
+        this->p->email.erase(this->p->email.begin() + id);
+        this->updateEmailTableView();
+    }
+}
+
+void PersonInfoDialog::on_changeGroupPushButton_clicked()
+{
+    PersonGroupsDialog *dialog = new PersonGroupsDialog(this->persongroups, true, this);
+    connect(dialog, SIGNAL(selectPersonGroup(PersonGroup*)), this, SLOT(onSelectPersonGroup(PersonGroup*)));
+    dialog->exec();
+}
+
+void PersonInfoDialog::onSelectPersonGroup(PersonGroup *pg)
+{
+    if(this->p->groupID != -1)
+        --this->persongroups->findByID(p->groupID)->data.count;
+    this->p->groupID = pg->id;
+    if(pg->id != -1)
+        ++this->persongroups->findByID(pg->id)->data.count;
+    ui->groupLineEdit->setText(QString::fromStdString(pg->name));
 }

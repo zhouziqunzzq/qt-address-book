@@ -5,7 +5,7 @@
 class TelephoneGroup : public Group{
 public:
     TelephoneGroup() : Group() {}
-    TelephoneGroup(int id, std::string name) : Group(id, name) {}
+    TelephoneGroup(int id, std::string name) : Group(id, 0, name) {}
     friend class TelephoneGroups;
     friend class PersonInfoDialog;
 private:

@@ -111,7 +111,7 @@ bool IOHelper::savePersons(const Persons &persons) const //保存联系人
     for(int i = 0; i < persons.count(); ++i, it = it->succ)
     {
         XMLElement *personElem = doc->NewElement("Person");
-        personElem->SetAttribute("id", i);
+        personElem->SetAttribute("id", it->data.id);
         XMLNode *personNode = root->InsertEndChild(personElem);
         //name
         XMLNode *personNameNode = personNode->InsertEndChild(doc->NewElement("name"));
@@ -216,6 +216,8 @@ bool IOHelper::readPersonGroups(PersonGroups &persongroups)  //读入联系人�
                 persongroups.maxID = pg.id > persongroups.maxID ? pg.id : persongroups.maxID;
                 //name
                 pg.name = getXMLElementTextSafe(persongroupElem->FirstChildElement("name"));
+                //count
+                pg.count = QString::fromStdString(getXMLElementTextSafe(persongroupElem->FirstChildElement("count"))).toInt();
                 //push
                 persongroups._elem.insertAsLast(pg);
                 //end
@@ -235,11 +237,14 @@ bool IOHelper::savePersonGroups(const PersonGroups &persongroups) const  //保�
     for(int i = 0; i < persongroups.count(); ++i, it = it->succ)
     {
         XMLElement *persongroupElem = doc->NewElement("PersonGroup");
-        persongroupElem->SetAttribute("id", i);
+        persongroupElem->SetAttribute("id", it->data.id);
         XMLNode *persongroupNode = root->InsertEndChild(persongroupElem);
         //name
         XMLNode *nameNode = persongroupNode->InsertEndChild(doc->NewElement("name"));
         nameNode->InsertEndChild(doc->NewText(it->data.name.c_str()));
+        //count
+        XMLNode *countNode = persongroupNode->InsertEndChild(doc->NewElement("count"));
+        countNode->InsertEndChild(doc->NewText(QString::number(it->data.count).toStdString().c_str()));
     }
     //Write out xml file
     if(doc->SaveFile(this->persongroupsFileName.c_str()) == XMLError::XML_SUCCESS)
@@ -267,6 +272,8 @@ bool IOHelper::readTelephoneGroups(TelephoneGroups &telephonegroups) //读入电
                 telephonegroups.maxID = tg.id > telephonegroups.maxID ? tg.id : telephonegroups.maxID;
                 //name
                 tg.name = getXMLElementTextSafe(telephonegroupElem->FirstChildElement("name"));
+                //count
+                tg.count = QString::fromStdString(getXMLElementTextSafe(telephonegroupElem->FirstChildElement("count"))).toInt();
                 //push
                 telephonegroups._elem.insertAsLast(tg);
                 //end
@@ -286,11 +293,14 @@ bool IOHelper::saveTelephoneGroups(const TelephoneGroups &telephonegroups) const
     for(int i = 0; i < telephonegroups.count(); ++i, it = it->succ)
     {
         XMLElement *telephonegroupElem = doc->NewElement("TelephoneGroup");
-        telephonegroupElem->SetAttribute("id", i);
+        telephonegroupElem->SetAttribute("id", it->data.id);
         XMLNode *telephonegroupNode = root->InsertEndChild(telephonegroupElem);
         //name
         XMLNode *nameNode = telephonegroupNode->InsertEndChild(doc->NewElement("name"));
         nameNode->InsertEndChild(doc->NewText(it->data.name.c_str()));
+        //count
+        XMLNode *countNode = telephonegroupNode->InsertEndChild(doc->NewElement("count"));
+        countNode->InsertEndChild(doc->NewText(QString::number(it->data.count).toStdString().c_str()));
     }
     //Write out xml file
     if(doc->SaveFile(this->telephonegroupsFileName.c_str()) == XMLError::XML_SUCCESS)
@@ -318,6 +328,8 @@ bool IOHelper::readEmailGroups(EmailGroups &emailgroups) //读入email分组
                 emailgroups.maxID = eg.id > emailgroups.maxID ? eg.id : emailgroups.maxID;
                 //name
                 eg.name = getXMLElementTextSafe(emailgroupElem->FirstChildElement("name"));
+                //count
+                eg.count = QString::fromStdString(getXMLElementTextSafe(emailgroupElem->FirstChildElement("count"))).toInt();
                 //push
                 emailgroups._elem.insertAsLast(eg);
                 //end
@@ -337,11 +349,14 @@ bool IOHelper::saveEmailGroups(const EmailGroups &emailgroups) const //保存ema
     for(int i = 0; i < emailgroups.count(); ++i, it = it->succ)
     {
         XMLElement *emailgroupElem = doc->NewElement("EmailGroup");
-        emailgroupElem->SetAttribute("id", i);
+        emailgroupElem->SetAttribute("id", it->data.id);
         XMLNode *emailgroupNode = root->InsertEndChild(emailgroupElem);
         //name
         XMLNode *nameNode = emailgroupNode->InsertEndChild(doc->NewElement("name"));
         nameNode->InsertEndChild(doc->NewText(it->data.name.c_str()));
+        //count
+        XMLNode *countNode = emailgroupNode->InsertEndChild(doc->NewElement("count"));
+        countNode->InsertEndChild(doc->NewText(QString::number(it->data.count).toStdString().c_str()));
     }
     //Write out xml file
     if(doc->SaveFile(this->emailgroupsFileName.c_str()) == XMLError::XML_SUCCESS)

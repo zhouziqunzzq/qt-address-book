@@ -7,6 +7,7 @@
 #include <QStandardItemModel>
 #include <vector>
 #include <QCloseEvent>
+#include <algorithm>
 #include "persons.h"
 #include "persongroup.h"
 #include "persongroups.h"
@@ -18,6 +19,7 @@
 #include "emailgroups.h"
 #include "telephoneinfodialog.h"
 #include "emailinfodialog.h"
+#include "persongroupsdialog.h"
 
 namespace Ui {
 class PersonInfoDialog;
@@ -55,10 +57,19 @@ private slots:
     void on_OkPushButton_clicked();
     void updateTelTableView();
     void updateEmailTableView();
+    void on_addTelPushButton_clicked();
+    void onAddNewTel(Telephone *t);
+    void onAddNewEmail(Email *e);
+    void on_delTelPushButton_clicked();
+    void on_addEmailPushButton_clicked();
+    void on_delEmailPushButton_clicked();
+    void on_changeGroupPushButton_clicked();
+    void onSelectPersonGroup(PersonGroup *pg);
 
 private:
     Ui::PersonInfoDialog *ui;
     Person *p;
+    Person *tempPerson;
     PersonGroups *persongroups;
     TelephoneGroups *telephonegroups;
     EmailGroups *emailgroups;

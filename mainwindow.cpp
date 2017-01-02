@@ -36,55 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //connections
     connect(ui->exitAction, SIGNAL(triggered(bool)), this, SLOT(close()));
 
-    /*Persons IO Test*/
-    Person p1, p2, p3, p4;
-    p1.id = this->persons.count();
-    p1.groupID = 0;
-    p1.name = "Cooler";
-    p1.address = new Address("China", "Liaoning", "Shenyang", "NEU");
-    p1.birthday = new Date(1997, 8, 19);
-    Telephone t1("123456", 0);
-    p1.telephone.push_back(t1);
-    this->persons.insertAsLast(p1);
-
-    p2.id = this->persons.count();
-    p2.groupID = 1;
-    p2.name = "御坂美琴";
-    p2.address = new Address("China", "Liaoning", "Shenyang", "NEU");
-    p2.birthday = new Date(1997, 1, 1);
-    Telephone t2("654321", 0);
-    p2.telephone.push_back(t2);
-    this->persons.insertAsLast(p2);
-
-    p3.id = this->persons.count();
-    p3.groupID = -1;
-    p3.name = "宫水三叶";
-    p3.address = new Address("China", "Liaoning", "Shenyang", "Northeastern University");
-    p3.birthday = new Date(1997, 2, 2);
-    Telephone t3("2323232323", 1);
-    p3.telephone.push_back(t3);
-    Email e1;
-    e1.groupID = -1;
-    e1.email = "mituha@miyami.com";
-    p3.email.push_back(e1);
-    e1.groupID = 1;
-    e1.email = "mituha123@miyami.com";
-    p3.email.push_back(e1);
-    this->persons.insertAsLast(p3);
-
-    p4.id = this->persons.count();
-    p4.name = "Wang";
-    p4.groupID = 1;
-    p4.address = new Address("China", "Liaoning", "Shenyang", "Northeastern University");
-    p4.birthday = new Date(1997, 2, 2);
-    Telephone t4("2323232323", -1);
-    p4.telephone.push_back(t4);
-    this->persons.insertAsLast(p4);
-
-    this->ioh.savePersons(this->persons);
-    this->persons._elem.clear();
-    this->ioh.readPersons(this->persons);
-
     /*PersonGroups IO Test*/
     PersonGroup pg;
     pg.id = 0;
@@ -94,13 +45,8 @@ MainWindow::MainWindow(QWidget *parent) :
     pg.name = "同学";
     this->persongroups.insertAsLast(pg);
     this->ioh.savePersonGroups(this->persongroups);
+    this->persongroups._elem.clear();
     this->ioh.readPersonGroups(this->persongroups);
-    /*cout << "PersonGroups:" << endl;
-    ListNodePosi(PersonGroup) pgit = this->persongroups._elem.first();
-    for(int i = 0; i < this->persongroups.count(); ++i, pgit = pgit->succ)
-    {
-        cout << pgit->data.id << " " << pgit->data.name << endl;
-    }*/
 
     /*TelephoneGroups IO Test*/
     TelephoneGroup tg;
@@ -111,13 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
     tg.name = "固定电话";
     this->telephonegroups.insertAsLast(tg);
     this->ioh.saveTelephoneGroups(this->telephonegroups);
+    this->telephonegroups._elem.clear();
     this->ioh.readTelephoneGroups(this->telephonegroups);
-    /*cout << "TelephoneGroups:" << endl;
-    ListNodePosi(TelephoneGroup) tgit = this->telephonegroups._elem.first();
-    for(int i = 0; i < this->telephonegroups.count(); ++i, tgit = tgit->succ)
-    {
-        cout << tgit->data.id << " " << tgit->data.name << endl;
-    }*/
 
     /*EmailGroups IO Test*/
     EmailGroup eg;
@@ -128,13 +69,64 @@ MainWindow::MainWindow(QWidget *parent) :
     eg.name = "日常";
     this->emailgroups.insertAsLast(eg);
     this->ioh.saveEmailGroups(this->emailgroups);
+    this->emailgroups._elem.clear();
     this->ioh.readEmailGroups(this->emailgroups);
-    /*cout << "EmailGroups:" << endl;
-    ListNodePosi(EmailGroup) egit = this->emailgroups._elem.first();
-    for(int i = 0; i < this->emailgroups.count(); ++i, egit = egit->succ)
-    {
-        cout << egit->data.id << " " << egit->data.name << endl;
-    }*/
+
+    /*Persons IO Test*/
+    Person p1, p2, p3, p4;
+    p1.id = this->persons.count();
+    p1.groupID = 0;
+    ++this->persongroups.findByID(p1.groupID)->data.count;
+    p1.name = "Cooler";
+    p1.address = new Address("China", "Liaoning", "Shenyang", "NEU");
+    p1.birthday = new Date(1997, 8, 19);
+    Telephone t1("123456", 0);
+    ++this->telephonegroups.findByID(t1.groupID)->data.count;
+    p1.telephone.push_back(t1);
+    this->persons.insertAsLast(p1);
+
+    p2.id = this->persons.count();
+    p2.groupID = 1;
+    ++this->persongroups.findByID(p2.groupID)->data.count;
+    p2.name = "御坂美琴";
+    p2.address = new Address("China", "Liaoning", "Shenyang", "NEU");
+    p2.birthday = new Date(1997, 1, 1);
+    Telephone t2("654321", 0);
+    ++this->telephonegroups.findByID(t2.groupID)->data.count;
+    p2.telephone.push_back(t2);
+    this->persons.insertAsLast(p2);
+
+    p3.id = this->persons.count();
+    p3.groupID = -1;
+    p3.name = "宫水三叶";
+    p3.address = new Address("China", "Liaoning", "Shenyang", "Northeastern University");
+    p3.birthday = new Date(1997, 2, 2);
+    Telephone t3("2323232323", 1);
+    ++this->telephonegroups.findByID(t3.groupID)->data.count;
+    p3.telephone.push_back(t3);
+    Email e1;
+    e1.groupID = -1;
+    e1.email = "mituha@miyami.com";
+    p3.email.push_back(e1);
+    e1.groupID = 1;
+    e1.email = "mituha123@miyami.com";
+    ++this->emailgroups.findByID(e1.groupID)->data.count;
+    p3.email.push_back(e1);
+    this->persons.insertAsLast(p3);
+
+    p4.id = this->persons.count();
+    p4.name = "Wang";
+    p4.groupID = 1;
+    ++this->persongroups.findByID(p4.groupID)->data.count;
+    p4.address = new Address("China", "Liaoning", "Shenyang", "Northeastern University");
+    p4.birthday = new Date(1997, 2, 2);
+    Telephone t4("2323232323", -1);
+    p4.telephone.push_back(t4);
+    this->persons.insertAsLast(p4);
+
+    this->ioh.savePersons(this->persons);
+    this->persons._elem.clear();
+    this->ioh.readPersons(this->persons);
 
     //Display using TableView
     this->model = new QStandardItemModel(persons.count(), 3);
@@ -198,7 +190,6 @@ void MainWindow::updateTableView()
     model->removeRows(0, model->rowCount());
     //sort
     this->persons.sort();
-    //this->persons.updateID();
     //display
     ListNodePosi(Person) pit = this->persons._elem.first();
     for(int i = 0; i < persons.count(); ++i, pit = pit->succ)
@@ -215,21 +206,62 @@ void MainWindow::updateTableView()
     }
     //resize
     //ui->personTableView->resizeColumnsToContents();
+    //update count
+    this->updateCount();
+}
+
+void MainWindow::updateCount()
+{
+    //Clean persongroups count
+    ListNodePosi(PersonGroup) pgit = this->persongroups._elem.first();
+    for(int i = 0; i < this->persongroups.count(); ++i, pgit = pgit->succ)
+        pgit->data.count = 0;
+    //Clean telephonegroups count
+    ListNodePosi(TelephoneGroup) tgit = this->telephonegroups._elem.first();
+    for(int i = 0; i < this->telephonegroups.count(); ++i, tgit = tgit->succ)
+        tgit->data.count = 0;
+    //Clean emailgroups count
+    ListNodePosi(EmailGroup) egit = this->emailgroups._elem.first();
+    for(int i = 0; i < this->emailgroups.count(); ++i, egit = egit->succ)
+        egit->data.count = 0;
+    //Update count
+    ListNodePosi(Person) pit = this->persons._elem.first();
+    for(int i = 0; i < this->persons.count(); ++i, pit = pit->succ)
+    {
+        if(pit->data.groupID != -1)
+            ++this->persongroups.findByID(pit->data.groupID)->data.count;
+        for(vector<Telephone>::iterator it = pit->data.telephone.begin();
+            it != pit->data.telephone.end(); ++it)
+        {
+            if(it->groupID != -1)
+                ++this->telephonegroups.findByID(it->groupID)->data.count;
+        }
+        for(vector<Email>::iterator it = pit->data.email.begin();
+            it != pit->data.email.end(); ++it)
+        {
+            if(it->groupID != -1)
+                ++this->emailgroups.findByID(it->groupID)->data.count;
+        }
+    }
 }
 
 void MainWindow::on_pushButton_5_clicked()  //delete
 {
+    if(ui->personTableView->currentIndex().row() == -1)
+        return;
     //Get selected row
     int selectedRow = ui->personTableView->currentIndex().row();
     //Get person's id
     int id = this->model->item(selectedRow, IDColumn)->text().toInt();
+    //Get pointer
+    ListNodePosi(Person) p =this->persons.findByID(id);
     //Confirm
     QString name = this->model->item(selectedRow, NameColumn)->text();
     if(QMessageBox::information(this, "确认删除", "确认要删除联系人" + name + "吗？",
-                             QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
     {
         //Remove and update
-        this->persons.remove(this->persons.findByID(id));
+        this->persons.remove(p);
         this->updateTableView();
     }
 }
@@ -248,4 +280,103 @@ void MainWindow::on_newPushButton_clicked()
                                                     &this->emailgroups, this);
     connect(dialog, SIGNAL(addNewPerson(Person*)), this, SLOT(onAddnewperson(Person*)));
     dialog->exec();
+}
+
+void MainWindow::on_saveAction_triggered()
+{
+    bool flag = true;
+    flag &= this->ioh.savePersons(this->persons);
+    flag &= this->ioh.savePersonGroups(this->persongroups);
+    flag &= this->ioh.saveTelephoneGroups(this->telephonegroups);
+    flag &= this->ioh.saveEmailGroups(this->emailgroups);
+    flag &= this->ioh.saveSettings(this->settings);
+    if(flag)
+        QMessageBox::information(this, "提示", "保存成功！", QMessageBox::Ok, QMessageBox::Ok);
+    else
+        QMessageBox::critical(this, "错误", "保存失败，请重试！", QMessageBox::Ok, QMessageBox::Ok);
+}
+
+void MainWindow::on_personGroupsManageAction_triggered()
+{
+    PersonGroupsDialog *dialog = new PersonGroupsDialog(&(this->persongroups), false, this);
+    connect(dialog, SIGNAL(cleanPersonGroup(PersonGroup*)), this, SLOT(onCleanPersonGroup(PersonGroup*)));
+    connect(dialog, SIGNAL(clearPersonGroup(PersonGroup*)), this, SLOT(onClearPersonGroup(PersonGroup*)));
+    dialog->exec();
+    this->updateTableView();
+    delete dialog;
+}
+
+void MainWindow::on_telGroupsManageAction_triggered()
+{
+    TelephoneGroupsDialog *dialog = new TelephoneGroupsDialog(&(this->telephonegroups), false, this);
+    connect(dialog, SIGNAL(cleanTelephoneGroup(TelephoneGroup*)), this, SLOT(onCleanTelephoneGroup(TelephoneGroup*)));
+    dialog->exec();
+    this->updateTableView();
+    delete dialog;
+}
+
+void MainWindow::on_emailGroupsManageAction_triggered()
+{
+    EmailGroupsDialog *dialog = new EmailGroupsDialog(&(this->emailgroups), false, this);
+    connect(dialog, SIGNAL(cleanEmailGroup(EmailGroup*)), this, SLOT(onCleanEmailGroup(EmailGroup*)));
+    dialog->exec();
+    this->updateTableView();
+    delete dialog;
+}
+
+void MainWindow::on_settingsManageAction_triggered()
+{
+
+}
+
+void MainWindow::onCleanEmailGroup(EmailGroup *eg)
+{
+    ListNodePosi(Person) pit = this->persons._elem.first();
+    for(int i = 0; i < this->persons.count(); ++i, pit = pit->succ)
+    {
+        for(vector<Email>::iterator it = pit->data.email.begin();
+            it != pit->data.email.end(); ++it)
+        {
+            if(it->groupID == eg->id)
+                it->groupID = -1;
+        }
+    }
+}
+
+void MainWindow::onCleanTelephoneGroup(TelephoneGroup *tg)
+{
+    ListNodePosi(Person) pit = this->persons._elem.first();
+    for(int i = 0; i < this->persons.count(); ++i, pit = pit->succ)
+    {
+        for(vector<Telephone>::iterator it = pit->data.telephone.begin();
+            it != pit->data.telephone.end(); ++it)
+        {
+            if(it->groupID == tg->id)
+                it->groupID = -1;
+        }
+    }
+}
+
+void MainWindow::onCleanPersonGroup(PersonGroup *pg)
+{
+    ListNodePosi(Person) pit = this->persons._elem.first();
+    for(int i = 0; i < this->persons.count(); ++i, pit = pit->succ)
+    {
+        if(pit->data.groupID == pg->id)
+            pit->data.groupID = -1;
+    }
+    this->updateTableView();
+}
+
+void MainWindow::onClearPersonGroup(PersonGroup *pg)
+{
+    ListNodePosi(Person) pit = this->persons._elem.first();
+    ListNodePosi(Person) q = NULL;
+    for(int i = 0; i < this->persons.count(); ++i, pit = q)
+    {
+        q = pit->succ;
+        if(pit->data.groupID == pg->id)
+            this->persons.remove(pit);
+    }
+    this->updateTableView();
 }

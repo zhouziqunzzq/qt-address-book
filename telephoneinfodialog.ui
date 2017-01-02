@@ -53,10 +53,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="groupLineEdit"/>
+        <widget class="QLineEdit" name="groupLineEdit">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="groupSelectPushButton">
          <property name="text">
           <string>选择</string>
          </property>
@@ -67,21 +71,21 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="editPushButton">
          <property name="text">
           <string>编辑</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="okPushButton">
          <property name="text">
           <string>确定</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="cancelPushButton">
          <property name="text">
           <string>取消</string>
          </property>
