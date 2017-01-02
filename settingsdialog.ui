@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>251</width>
-    <height>169</height>
+    <height>172</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,6 +60,13 @@
          </item>
         </layout>
        </item>
+       <item>
+        <widget class="QCheckBox" name="checkBox">
+         <property name="text">
+          <string>清除密码</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
@@ -85,5 +92,22 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>cancelPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>135</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>244</x>
+     <y>155</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

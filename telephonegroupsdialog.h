@@ -22,7 +22,8 @@ public:
 
     enum{
         IDColumn,
-        NameColumn
+        NameColumn,
+        CountColumn
     };
 
 signals:

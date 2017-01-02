@@ -8,6 +8,7 @@ public:
     Settings();
     friend class IOHelper;
     friend class MainWindow;
+    friend class SettingsDialog;
 private:
     std::string username;
     std::string password;

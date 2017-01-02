@@ -21,7 +21,8 @@ public:
     ~PersonGroupsDialog();
     enum{
         IDColumn,
-        NameColumn
+        NameColumn,
+        CountColumn
     };
 
 signals:

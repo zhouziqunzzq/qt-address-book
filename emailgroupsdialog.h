@@ -21,7 +21,8 @@ public:
     ~EmailGroupsDialog();
     enum{
         IDColumn,
-        NameColumn
+        NameColumn,
+        CountColumn
     };
 
 signals:

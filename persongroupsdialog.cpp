@@ -16,7 +16,7 @@ PersonGroupsDialog::PersonGroupsDialog(PersonGroups *pg, bool isSelection, QWidg
     {
         ui->delPushButton->hide();
     }
-    this->model = new QStandardItemModel(this->persongroups->count(), 2);
+    this->model = new QStandardItemModel(this->persongroups->count(), 3);
     this->setupModel();
     this->setupTableView();
     this->updateTableView();
@@ -31,6 +31,7 @@ void PersonGroupsDialog::setupModel()
 {
     model->setHeaderData(0, Qt::Horizontal, QString::fromUtf8("编号"));
     model->setHeaderData(1, Qt::Horizontal, QString::fromUtf8("组名"));
+    model->setHeaderData(2, Qt::Horizontal, QString::fromUtf8("记录数"));
 }
 
 void PersonGroupsDialog::setupTableView()
@@ -54,9 +55,11 @@ void PersonGroupsDialog::updateTableView()
         model->item(i, IDColumn)->setTextAlignment(Qt::AlignCenter);
         model->setItem(i, NameColumn, new QStandardItem(QString::fromStdString(pit->data.name)));
         model->item(i, NameColumn)->setTextAlignment(Qt::AlignCenter);
+        model->setItem(i, CountColumn, new QStandardItem(QString::number(pit->data.count)));
+        model->item(i, CountColumn)->setTextAlignment(Qt::AlignCenter);
     }
     //resize
-    //ui->personTableView->resizeColumnsToContents();
+    ui->tableView->resizeColumnsToContents();
 }
 
 void PersonGroupsDialog::onAddNewPersonGroup(PersonGroup *pg)
@@ -113,7 +116,7 @@ void PersonGroupsDialog::on_delPushButton_clicked()
     //Not Empty
     else
     {
-        auto rst = QMessageBox::information(this, "确认删除", "确认删除并清空分组" + name + "吗？选是将删除并清空分组，选否将仅删除分组，选取消将不会进行任何更改。",
+        auto rst = QMessageBox::information(this, "确认删除", "确认删除并清空分组" + name + "吗？选是将删除<strong>并清空分组</strong>，选否将仅删除分组，选取消将不会进行任何更改。",
                                             QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Cancel);
         if(rst == QMessageBox::Yes)
         {

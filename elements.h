@@ -14,12 +14,6 @@ protected:
     virtual ListNodePosi(T) insertA(ListNodePosi(T) p, T const &e);  //作为前驱插入
     virtual ListNodePosi(T) insertB(ListNodePosi(T) p, T const &e);  //作为后继插入
 
-    //virtual void edit(ListNodePosi(T) p, T const &e);  //修改
-
-    //virtual ListNodePosi(T) search(T const &e);  //查找
-
-    //virtual void deleteAt(ListNodePosi(T));  //删除
-
 public:
     Elements() : maxID(0) {}
     virtual long long int count() const {return this->_elem.size();}    //返回元素个数

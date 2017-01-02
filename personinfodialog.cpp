@@ -26,6 +26,7 @@ PersonInfoDialog::PersonInfoDialog(PersonGroups *pg, TelephoneGroups *tg, EmailG
     this->emailModel = new QStandardItemModel(this->p->email.size(), 3);
     //enable edit
     this->enableEdit();
+    this->displayInfo();
 }
 
 PersonInfoDialog::PersonInfoDialog(Person *person, PersonGroups *pg, TelephoneGroups *tg, EmailGroups *eg, QWidget *parent) :

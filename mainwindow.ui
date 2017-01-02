@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>393</width>
-    <height>532</height>
+    <width>345</width>
+    <height>530</height>
    </rect>
   </property>
   <property name="font">
@@ -19,7 +19,7 @@
    <string>2645通讯录</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <layout class="QHBoxLayout" name="horizontalLayout_5">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -47,7 +47,7 @@
         <item>
          <widget class="QPushButton" name="pushButton_2">
           <property name="text">
-           <string>清除</string>
+           <string>清除关键词</string>
           </property>
          </widget>
         </item>
@@ -87,6 +87,31 @@
             </property>
            </spacer>
           </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>共</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="personsCountLabel">
+              <property name="text">
+               <string>0</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>人</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
          </layout>
         </item>
        </layout>
@@ -116,14 +141,14 @@
         <item>
          <widget class="QPushButton" name="pushButton_3">
           <property name="text">
-           <string>更改</string>
+           <string>更改分组筛选</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="pushButton_4">
           <property name="text">
-           <string>清除</string>
+           <string>清除分组筛选</string>
           </property>
          </widget>
         </item>
@@ -138,7 +163,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>393</width>
+     <width>345</width>
      <height>26</height>
     </rect>
    </property>
@@ -166,8 +191,15 @@
     </property>
     <addaction name="aboutAction"/>
    </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>测试</string>
+    </property>
+    <addaction name="loadTestDataAction"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
+   <addaction name="menu_4"/>
    <addaction name="menu_3"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -218,6 +250,11 @@
   <action name="aboutAction">
    <property name="text">
     <string>关于</string>
+   </property>
+  </action>
+  <action name="loadTestDataAction">
+   <property name="text">
+    <string>加载内置示例</string>
    </property>
   </action>
  </widget>

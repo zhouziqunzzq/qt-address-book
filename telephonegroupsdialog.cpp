@@ -16,7 +16,7 @@ TelephoneGroupsDialog::TelephoneGroupsDialog(TelephoneGroups *tg, bool isSelecti
     {
         ui->delPushButton->hide();
     }
-    this->model = new QStandardItemModel(this->telephonegroups->count(), 2);
+    this->model = new QStandardItemModel(this->telephonegroups->count(), 3);
     this->setupModel();
     this->setupTableView();
     this->updateTableView();
@@ -31,6 +31,7 @@ void TelephoneGroupsDialog::setupModel()
 {
     model->setHeaderData(0, Qt::Horizontal, QString::fromUtf8("编号"));
     model->setHeaderData(1, Qt::Horizontal, QString::fromUtf8("组名"));
+    model->setHeaderData(2, Qt::Horizontal, QString::fromUtf8("记录数"));
 }
 
 void TelephoneGroupsDialog::setupTableView()
@@ -54,9 +55,11 @@ void TelephoneGroupsDialog::updateTableView()
         model->item(i, IDColumn)->setTextAlignment(Qt::AlignCenter);
         model->setItem(i, NameColumn, new QStandardItem(QString::fromStdString(pit->data.name)));
         model->item(i, NameColumn)->setTextAlignment(Qt::AlignCenter);
+        model->setItem(i, CountColumn, new QStandardItem(QString::number(pit->data.count)));
+        model->item(i, CountColumn)->setTextAlignment(Qt::AlignCenter);
     }
     //resize
-    //ui->personTableView->resizeColumnsToContents();
+    ui->tableView->resizeColumnsToContents();
 }
 
 void TelephoneGroupsDialog::onAddNewTelephoneGroup(TelephoneGroup *tg)

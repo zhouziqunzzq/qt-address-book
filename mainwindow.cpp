@@ -16,27 +16,43 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    /*Settings IO Test*/
-    this->ioh.readSettings(this->settings);
-
-    if(this->settings.password != "")
+    //Read Settings
+    if(!this->ioh.readSettings(this->settings)
+            && !this->ioh.readPersons(this->persons)) //首次使用
     {
-        //Hide MainWindow if needed
-        this->setWindowOpacity(0);
-        //Validate password if needed
-        PasswordValidateDialog *pd = new PasswordValidateDialog(this);
-        connect(pd, SIGNAL(onValidatePassword(std::string, PasswordValidateDialog*)),
-                this, SLOT(validatePassword(std::string, PasswordValidateDialog*)));
-        connect(pd, SIGNAL(rejected()), this, SLOT(close()));
-        pd->exec();
-        delete pd;
+        QMessageBox::information(this, "欢迎", "欢迎使用2645通讯录，首次使用请设置您的账户信息！",
+                                 QMessageBox::Ok, QMessageBox::Ok);
+        SettingsDialog *dialog = new SettingsDialog(&(this->settings), this);
+        dialog->exec();
+        delete dialog;
+        ioh.saveSettings(this->settings);
     }
-
+    else    //登陆
+    {
+        if(this->settings.password != "")
+        {
+            //Hide MainWindow if needed
+            this->setWindowOpacity(0);
+            //Validate password if needed
+            PasswordValidateDialog *pd = new PasswordValidateDialog(this);
+            connect(pd, SIGNAL(onValidatePassword(std::string, PasswordValidateDialog*)),
+                    this, SLOT(validatePassword(std::string, PasswordValidateDialog*)));
+            connect(pd, SIGNAL(rejected()), this, SLOT(close()));
+            pd->exec();
+        }
+        else
+        {
+            std::string welcomeMsg = "欢迎，" + (this->settings.username == "" ? "用户！" : this->settings.username + "！");
+            QMessageBox::information(this, "登陆成功", QString::fromStdString(welcomeMsg),QMessageBox::Ok, QMessageBox::Ok);
+        }
+        //Read data
+        this->ioh.readPersons(this->persons);
+        this->ioh.readPersonGroups(this->persongroups);
+        this->ioh.readTelephoneGroups(this->telephonegroups);
+        this->ioh.readEmailGroups(this->emailgroups);
+    }
     //connections
     connect(ui->exitAction, SIGNAL(triggered(bool)), this, SLOT(close()));
-
-    //Generate test data
-    this->generateTestData();
 
     //Display using TableView
     this->model = new QStandardItemModel(persons.count(), 3);
@@ -128,9 +144,9 @@ void MainWindow::generateTestData()
     pg.id = 1;
     pg.name = "同学";
     this->persongroups.insertAsLast(pg);
-    this->ioh.savePersonGroups(this->persongroups);
-    this->persongroups._elem.clear();
-    this->ioh.readPersonGroups(this->persongroups);
+    //this->ioh.savePersonGroups(this->persongroups);
+    //this->persongroups._elem.clear();
+    //this->ioh.readPersonGroups(this->persongroups);
 
     /*TelephoneGroups IO Test*/
     TelephoneGroup tg;
@@ -140,9 +156,9 @@ void MainWindow::generateTestData()
     tg.id = 1;
     tg.name = "固定电话";
     this->telephonegroups.insertAsLast(tg);
-    this->ioh.saveTelephoneGroups(this->telephonegroups);
-    this->telephonegroups._elem.clear();
-    this->ioh.readTelephoneGroups(this->telephonegroups);
+    //this->ioh.saveTelephoneGroups(this->telephonegroups);
+    //this->telephonegroups._elem.clear();
+    //this->ioh.readTelephoneGroups(this->telephonegroups);
 
     /*EmailGroups IO Test*/
     EmailGroup eg;
@@ -152,9 +168,9 @@ void MainWindow::generateTestData()
     eg.id = 1;
     eg.name = "日常";
     this->emailgroups.insertAsLast(eg);
-    this->ioh.saveEmailGroups(this->emailgroups);
-    this->emailgroups._elem.clear();
-    this->ioh.readEmailGroups(this->emailgroups);
+    //this->ioh.saveEmailGroups(this->emailgroups);
+    //this->emailgroups._elem.clear();
+    //this->ioh.readEmailGroups(this->emailgroups);
 
     /*Persons IO Test*/
     Person p1, p2, p3, p4;
@@ -208,9 +224,9 @@ void MainWindow::generateTestData()
     p4.telephone.push_back(t4);
     this->persons.insertAsLast(p4);
 
-    this->ioh.savePersons(this->persons);
-    this->persons._elem.clear();
-    this->ioh.readPersons(this->persons);
+    //this->ioh.savePersons(this->persons);
+    //this->persons._elem.clear();
+    //this->ioh.readPersons(this->persons);
 }
 
 void MainWindow::updateTableView()
@@ -234,9 +250,10 @@ void MainWindow::updateTableView()
         model->item(i, GroupColumn)->setTextAlignment(Qt::AlignCenter);
     }
     //resize
-    //ui->personTableView->resizeColumnsToContents();
+    ui->personTableView->resizeColumnsToContents();
     //update count
     this->updateCount();
+    this->ui->personsCountLabel->setText(QString::number(this->persons.count()));
 }
 
 void MainWindow::updateCount()
@@ -364,8 +381,10 @@ void MainWindow::on_emailGroupsManageAction_triggered()
 
 void MainWindow::on_settingsManageAction_triggered()
 {
-    this->needSave = true;
-
+    SettingsDialog *dialog = new SettingsDialog(&(this->settings), this);
+    dialog->exec();
+    this->ioh.saveSettings(this->settings);
+    delete dialog;
 }
 
 void MainWindow::onCleanEmailGroup(EmailGroup *eg)
@@ -456,6 +475,8 @@ void MainWindow::on_pushButton_3_clicked()
 
 void MainWindow::onPersonGroupSelect(PersonGroup *pg)
 {
+    for(int i = 0; i < this->persons.count(); ++i)
+        ui->personTableView->setRowHidden(i, false);
     QString keyword = QString::fromStdString(pg->name);
     ui->groupFilterLabel->setText(keyword);
     for(int i = 0; i < this->persons.count(); ++i)
@@ -470,4 +491,18 @@ void MainWindow::on_pushButton_4_clicked()
     ui->groupFilterLabel->setText(QString::fromUtf8("全部分组"));
     for(int i = 0; i < this->persons.count(); ++i)
         ui->personTableView->setRowHidden(i, false);
+}
+
+void MainWindow::on_loadTestDataAction_triggered()
+{
+    this->needSave = true;
+    this->generateTestData();
+    this->updateTableView();
+}
+
+void MainWindow::on_aboutAction_triggered()
+{
+    QMessageBox::information(this, "关于",
+                             "数据结构课程设计作品————2645通讯录<br/>本程序能够实现联系人信息管理，并且提供友好的图形交互界面。<br/>使用语言：C++<br/>图形界面库：Qt 5<br/>内部数据存储结构：链表<br/><br/>组长：周子群<br/>组员：赵明阳 龚书杰",
+                             QMessageBox::Ok, QMessageBox::Ok);
 }

@@ -6,13 +6,14 @@
 #include <QStandardItemModel>
 #include <QCloseEvent>
 #include "iohelper.h"
+#include "listNode.h"
+#include "person.h"
 #include "passwordvalidatedialog.h"
 #include "personinfodialog.h"
 #include "persongroupsdialog.h"
 #include "telephonegroupsdialog.h"
 #include "emailgroupsdialog.h"
-#include "listNode.h"
-#include "person.h"
+#include "settingsdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -71,6 +72,8 @@ private slots:
     void on_pushButton_3_clicked();
     void onPersonGroupSelect(PersonGroup *pg);
     void on_pushButton_4_clicked();
+    void on_loadTestDataAction_triggered();
+    void on_aboutAction_triggered();
 };
 
 #endif // MAINWINDOW_H
