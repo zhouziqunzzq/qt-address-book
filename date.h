@@ -10,6 +10,7 @@ public:
     friend class Person;
     friend class IOHelper;
     friend class PersonInfoDialog;
+    friend class MainWindow;
     const Date& operator=(Date* d);
 private:
     int year;

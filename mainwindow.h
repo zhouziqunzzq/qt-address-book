@@ -5,6 +5,8 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include <QCloseEvent>
+#include <ctime>
+#include <cstdlib>
 #include "iohelper.h"
 #include "listNode.h"
 #include "person.h"
@@ -48,6 +50,12 @@ private:
     void setupModel();
     void setupTableView();
     void generateTestData();
+    int getRandomNumber(int l, int r);
+    std::string getRandomFamilyName();
+    std::string getRandomMaleFirstName();
+    std::string getRandomFemailFirstName();
+    std::string getRandomName();
+    std::string getRandomTelephone();
 
 private slots:
     void validatePassword(std::string pwd, PasswordValidateDialog* pd);
@@ -74,6 +82,7 @@ private slots:
     void on_pushButton_4_clicked();
     void on_loadTestDataAction_triggered();
     void on_aboutAction_triggered();
+    void on_genRandomAction_triggered();
 };
 
 #endif // MAINWINDOW_H

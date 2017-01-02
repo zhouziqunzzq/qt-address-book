@@ -15,7 +15,7 @@ protected:
     virtual ListNodePosi(T) insertB(ListNodePosi(T) p, T const &e);  //作为后继插入
 
 public:
-    Elements() : maxID(0) {}
+    Elements() : maxID(-1) {}
     virtual long long int count() const {return this->_elem.size();}    //返回元素个数
     void sort() { this->_elem.sort();}
     T remove(ListNodePosi(T) e)

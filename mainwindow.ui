@@ -196,6 +196,7 @@
      <string>测试</string>
     </property>
     <addaction name="loadTestDataAction"/>
+    <addaction name="genRandomAction"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -255,6 +256,11 @@
   <action name="loadTestDataAction">
    <property name="text">
     <string>加载内置示例</string>
+   </property>
+  </action>
+  <action name="genRandomAction">
+   <property name="text">
+    <string>随机生成数据</string>
    </property>
   </action>
  </widget>
